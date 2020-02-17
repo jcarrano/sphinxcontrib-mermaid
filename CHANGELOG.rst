@@ -1,6 +1,14 @@
 Changelog
 ---------
 
+0.4.0 (Feb 17, 2019)
+++++++++++++++++++++
+
+- Use an internal copy of memrmaid.js instead of the CDN by
+  `Juan Carrano <https://github.com/jcarrano>`_
+- Use Mermaid v8.4.7.
+
+
 0.3.1 (Nov 22, 2017)
 +++++++++++++++++++
 
