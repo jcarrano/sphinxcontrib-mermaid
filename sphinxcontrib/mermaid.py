@@ -38,7 +38,7 @@ mapname_re = re.compile(r'<map id="(.*?)"')
 
 VERSION = '8.4.7'
 JS_FILENAME_PKG = os.path.join('mermaid_static', 'mermaid.min.js')
-JS_FILENAME = pkg_resources.resource_filename(__package__, JS_FILENAME_PKG)
+JS_FILENAME = pkg_resources.resource_filename('sphinxcontrib.mermaid', JS_FILENAME_PKG)
 JS_FILENAME_REL = posixpath.join('_static', os.path.basename(JS_FILENAME))
 
 
