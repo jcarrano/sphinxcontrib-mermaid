@@ -1,5 +1,6 @@
 include README.rst
 include CHANGELOG.rst
 include LICENSE.rst
+include sphinxcontrib/mermaid_static/*.js
 global-exclude *.pyc
 exclude .gitignore

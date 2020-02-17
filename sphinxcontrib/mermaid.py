@@ -22,6 +22,7 @@ from six import text_type
 from docutils import nodes
 from docutils.parsers.rst import Directive, directives
 from docutils.statemachine import ViewList
+import pkg_resources
 
 import sphinx
 from sphinx.errors import SphinxError
@@ -36,9 +37,9 @@ logger = logging.getLogger(__name__)
 mapname_re = re.compile(r'<map id="(.*?)"')
 
 VERSION = '8.4.7'
-BASE_URL = 'https://unpkg.com/mermaid@{}/dist'.format(VERSION)
-JS_URL = '{}/mermaid.min.js'.format(BASE_URL)
-CSS_URL = None # css is contained in the js bundle
+JS_FILENAME_PKG = os.path.join('mermaid_static', 'mermaid.min.js')
+JS_FILENAME = pkg_resources.resource_filename(__package__, JS_FILENAME_PKG)
+JS_FILENAME_REL = posixpath.join('_static', os.path.basename(JS_FILENAME))
 
 
 class MermaidError(SphinxError):
@@ -200,10 +201,8 @@ def render_mm(self, code, options, format, prefix='mermaid'):
 def _render_mm_html_raw(self, node, code, options, prefix='mermaid',
                    imgcls=None, alt=None):
 
-    if JS_URL not in self.builder.script_files:
-        self.builder.script_files.append(JS_URL)
-    if CSS_URL and CSS_URL not in self.builder.css_files:
-        self.builder.css_files.append(CSS_URL)
+    if JS_FILENAME_REL not in self.builder.script_files:
+        self.builder.script_files.append(JS_FILENAME_REL)
     if "mermaid issue 527 workaround" not in self.body:
         # workaround for https://github.com/knsv/mermaid/issues/527
         self.body.append("""
@@ -365,6 +364,10 @@ def man_visit_mermaid(self, node):
     raise nodes.SkipNode
 
 
+def add_static(app, config):
+    config.html_static_path.append(os.path.dirname(JS_FILENAME))
+
+
 def setup(app):
     app.add_node(mermaid,
                  html=(html_visit_mermaid, None),
@@ -382,5 +385,7 @@ def setup(app):
     app.add_config_value('mermaid_params', list(), 'html')
     app.add_config_value('mermaid_verbose', False, 'html')
     app.add_config_value('mermaid_sequence_config', False, 'html')
+
+    app.connect('config-inited', add_static)
 
     return {'version': sphinx.__display_version__, 'parallel_read_safe': True}
